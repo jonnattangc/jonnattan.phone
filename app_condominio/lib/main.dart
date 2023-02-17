@@ -2,20 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'other/PageHome.dart';
 
-void main()
-{ 
+void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget 
-{
+class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage( title: 'Condominio Atlántico'),
+      home: MyHomePage(title: 'Condominio Atlántico'),
       debugShowCheckedModeBanner: false,
-      title: 'Condominio Atlántico',          
+      title: 'Condominio Atlántico',
       /*supportedLocales: [
             const Locale('en', 'US'),
             const Locale('es', 'ES'),
@@ -25,10 +22,10 @@ class MyApp extends StatelessWidget
         primarySwatch: Colors.grey,
         brightness: Brightness.light,
         textTheme: TextTheme(
-          title: TextStyle( 
-            fontSize: 27.0, 
-            fontWeight: FontWeight.bold, 
-            color: Color.fromRGBO(0x99, 0x66, 0x11, 1.0), 
+          titleSmall: TextStyle(
+            fontSize: 27.0,
+            fontWeight: FontWeight.bold,
+            color: Color.fromRGBO(0x99, 0x66, 0x11, 1.0),
           ),
         ),
       ),
