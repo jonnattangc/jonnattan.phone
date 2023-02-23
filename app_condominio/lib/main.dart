@@ -10,9 +10,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(title: 'Condominio Atlántico'),
+      home: MyHomePage(title: 'Jonnattan'),
       debugShowCheckedModeBanner: false,
-      title: 'Condominio Atlántico',
+      title: 'Jonnattan App',
       /*supportedLocales: [
             const Locale('en', 'US'),
             const Locale('es', 'ES'),
