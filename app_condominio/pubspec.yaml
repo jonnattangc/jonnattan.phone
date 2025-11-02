@@ -12,6 +12,7 @@ dependencies:
   location:
   geolocator:
   flutter_device_imei:
+  flutter_lints:
   # threading:
   flutter_map:
   url_launcher:

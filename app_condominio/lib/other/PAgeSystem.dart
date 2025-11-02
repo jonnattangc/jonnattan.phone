@@ -6,7 +6,7 @@ import 'PageMap.dart';
 class PageSystem extends StatelessWidget
 {
   final String imei;
-  PageSystem( {@required this.imei});
+  PageSystem( {required this.imei});
   
    @override
   Widget build(BuildContext context) 

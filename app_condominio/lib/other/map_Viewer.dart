@@ -10,7 +10,7 @@ class MapaWidget extends StatefulWidget
   final double height;
   final double zoom;
 
-  MapaWidget({@required this.ubicacion, this.titulo, this.subTitulo, this.height = 300.0, this.zoom = 5});
+  MapaWidget({required this.ubicacion, this.titulo, this.subTitulo, this.height = 300.0, this.zoom = 5});
 
   @override
   _MapaWidgetState createState() => _MapaWidgetState();

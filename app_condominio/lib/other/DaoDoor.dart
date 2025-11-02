@@ -1,12 +1,10 @@
 
-import 'package:flutter/cupertino.dart';
-
 class DaoDoor 
 {
   String imei;
   String iddoor;
 
-  DaoDoor({ @required this.imei, @required this.iddoor});
+  DaoDoor({ required this.imei, required this.iddoor});
 
   DaoDoor.fromJsonMap( Map<String,dynamic> json )
   {

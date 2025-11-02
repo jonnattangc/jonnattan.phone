@@ -10,7 +10,7 @@ import 'DataUser.dart';
 
 class RegisterPage extends StatefulWidget {
   final String imei;
-  RegisterPage({@required this.imei});
+  RegisterPage({required this.imei});
 
   @override
   _RegisterPageState createState() => _RegisterPageState();

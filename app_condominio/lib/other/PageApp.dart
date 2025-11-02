@@ -7,7 +7,7 @@ class PageApp extends StatelessWidget
 {
   final String imei;
   final bool validImei;
-  PageApp( { @required this.imei, @required this.validImei} );
+  PageApp( { required this.imei, required this.validImei} );
 
   @override
   Widget build(BuildContext context) 
