@@ -2,28 +2,33 @@
 class DaoDoor 
 {
   String imei;
-  String iddoor;
+  String doorId;
 
-  DaoDoor({ required this.imei, required this.iddoor});
+  DaoDoor({ 
+    required this.imei, 
+    required this.doorId 
+  }){
 
-  DaoDoor.fromJsonMap( Map<String,dynamic> json )
-  {
-    this.imei   = json['imei'];
-    this.iddoor = json['iddoor'];
   }
 
-  toJsonMap()
+  void fromJsonMap( Map<String,dynamic> json )
+  {
+    this.imei   = json['imei'];
+    this.doorId = json['iddoor'];
+  }
+
+  Map<String, dynamic> toJsonMap()
   {
     var json = new Map<String, dynamic>();
     json['imei']   = this.imei;
-    json['iddoor']   = this.iddoor;
+    json['iddoor']   = this.doorId;
     return json;
   }
 
   @override
   String toString() 
   {
-    String detail = '${this.imei} ${this.iddoor}';
+    String detail = '${this.imei} ${this.doorId}';
     return detail;
   }
 }

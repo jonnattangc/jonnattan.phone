@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_map/flutter_map.dart';
+
 import 'package:latlong/latlong.dart';
 
 class MapaWidget extends StatefulWidget 
@@ -85,25 +87,19 @@ class _MapaWidgetState extends State<MapaWidget>
   }
 
   Widget _creaTitulo() {
-    if (widget.titulo != null) {
-      return Center(
-        child: Text(
-          widget.titulo, overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-              fontSize: 8.0,
-              fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(0x78, 0x90, 0x9c, 0.0) ),
-        ),
-      );
-    }
-
-    return Container();
+    return Center(
+      child: Text(
+        widget.titulo, overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+            fontSize: 8.0,
+            fontWeight: FontWeight.bold,
+            color: Color.fromRGBO(0x78, 0x90, 0x9c, 0.0) ),
+      ),
+    );
   }
 
   Widget _creaSubTitulo() {
-    if (widget.subTitulo != null) 
-    {
-      return Center(
+    return Center(
         child: Text(
           widget.subTitulo, overflow: TextOverflow.ellipsis,
           style: TextStyle(
@@ -112,8 +108,6 @@ class _MapaWidgetState extends State<MapaWidget>
               color: Color.fromRGBO(0x78, 0x90, 0x9c, 0.0)) 
         ),
       );
-    }
-    return Container();
   }
 
   @override

@@ -1,20 +1,11 @@
-<<<<<<< Updated upstream
 arguments=--init-script /var/folders/9b/68xyd7d93bb71jbtpkv4l9k80000gq/T/d146c9752a26f79b52047fb6dc6ed385d064e120494f96f08ca63a317c41f94c.gradle --init-script /var/folders/9b/68xyd7d93bb71jbtpkv4l9k80000gq/T/52cde0cfcf3e28b8b7510e992210d9614505e0911af0c190bd590d7158574963.gradle
-auto.sync=false
-=======
-arguments=--init-script C\:\\Users\\jonna\\AppData\\Roaming\\Code\\User\\globalStorage\\redhat.java\\1.14.0\\config_win\\org.eclipse.osgi\\53\\0\\.cp\\gradle\\init\\init.gradle --init-script C\:\\Users\\jonna\\AppData\\Roaming\\Code\\User\\globalStorage\\redhat.java\\1.14.0\\config_win\\org.eclipse.osgi\\53\\0\\.cp\\gradle\\protobuf\\init.gradle
 auto.sync=true
->>>>>>> Stashed changes
 build.scans.enabled=false
 connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
 connection.project.dir=
 eclipse.preferences.version=1
 gradle.user.home=
-<<<<<<< Updated upstream
 java.home=/Users/jonnattangriffiths/Library/Java/JavaVirtualMachines/corretto-11.0.18/Contents/Home
-=======
-java.home=C\:/Program Files/Microsoft/jdk-11.0.12.7-hotspot
->>>>>>> Stashed changes
 jvm.arguments=
 offline.mode=false
 override.workspace.settings=true

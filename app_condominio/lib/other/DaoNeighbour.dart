@@ -1,4 +1,3 @@
-
 class DaoNeighbour 
 {
   String imei;
@@ -6,21 +5,30 @@ class DaoNeighbour
   String mail;
   String depto;
   String torre;
-  bool   pet;
+  bool   hasPet;
 
-  DaoNeighbour({ this.imei, this.name, this.mail, this.depto, this.torre, this.pet});
+  DaoNeighbour( {
+    required this.imei, 
+    required this.name, 
+    required this.mail, 
+    required this.depto, 
+    required this.torre, 
+    required this.hasPet
+  } ){
+    this.hasPet = hasPet;
+  }
 
-  DaoNeighbour.fromJsonMap( Map<String,dynamic> json )
+  void fromJsonMap( Map<String,dynamic> json )
   {
     this.imei   = json['imei'];
     this.name   = json['name'];
     this.mail   = json['mail'];
     this.depto  = json['depto'];
     this.torre  = json['torre'];
-    this.pet    = json['pet'];
+    this.hasPet    = json['pet'];
   }
 
-  toJsonMap()
+  Map<String, dynamic> toJsonMap()
   {
     var json = new Map<String, dynamic>();
     json['imei']   = this.imei;
@@ -28,7 +36,7 @@ class DaoNeighbour
     json['mail']   = this.mail;
     json['depto']  = this.depto;
     json['torre']  = this.torre;
-    json['pet']    = this.pet;
+    json['pet']    = this.hasPet;
     return json;
   }
 

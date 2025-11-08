@@ -8,6 +8,7 @@ import 'DataUser.dart';
 import 'DaoDoor.dart';
 
 class PageDoor extends StatefulWidget {
+  
   final String nombre;
   final String detalle;
 

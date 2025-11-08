@@ -1,35 +1,38 @@
+// import 'DaoQuestion.dart';
 
+class DataUser {
 
-import 'DaoQuestion.dart';
-
-class DataUser 
-{
-  static DataUser _instance;
+  static late final DataUser _instance = DataUser._internal();
   String _imei ="123456789";
   bool _valid  = false;
-  DaoQuestion _info;
+  // DaoQuestion _info = new DaoQuestion({ nombre: 'sin nombre', depto: 'sin departamento' , torre : 'sin torre'});
   
-  DataUser();
+  DataUser(){
+    //_info = null;
+  }
+
+  DataUser._internal();
 
   static DataUser getInstance() 
   {
-    if(DataUser._instance == null) 
-      DataUser._instance = new DataUser();
-    return DataUser._instance;
+    _instance = _instance ?? new DataUser();
+    return _instance;
   }
 
-  void setDao( DaoQuestion aDao )
-  {
-    this._info = aDao;
-  }
+  //void setDao( DaoQuestion info )
+  //{
+  //  this._info = info;
+  //}
 
   @override
   String toString() 
   {
-    if( _info != null )
-      return _info.toString();
-    else
-      return 'sin nombre';
+    String detail = 'IMEI: ${this._imei}';
+    return detail;
+    //if( _info != null )
+    //  return _info.toString();
+    //else
+    //  return 'sin nombre';
    }
   
   bool isValid()
