@@ -1,21 +1,10 @@
 
 class DaoDoor 
 {
-  String imei;
-  String doorId;
+  final String imei;
+  final String doorId;
 
-  DaoDoor({ 
-    required this.imei, 
-    required this.doorId 
-  }){
-
-  }
-
-  void fromJsonMap( Map<String,dynamic> json )
-  {
-    this.imei   = json['imei'];
-    this.doorId = json['iddoor'];
-  }
+  DaoDoor({ required this.imei, required this.doorId });
 
   Map<String, dynamic> toJsonMap()
   {

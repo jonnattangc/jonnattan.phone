@@ -6,7 +6,7 @@ import 'dart:convert';
 
 import 'DaoNeighbour.dart';
 import 'DaoQuestion.dart';
-import 'DataUser.dart';
+// import 'DataUser.dart';
 
 class RegisterPage extends StatefulWidget {
 
@@ -223,17 +223,19 @@ class _RegisterPageState extends State<RegisterPage> {
     print('##################### Ingreso: ' + dao.toString());
     try {
       final url = Uri.http("190.100.132.139:8080", "save");
+      
       final resp = await http.post(url,
           headers: {HttpHeaders.contentTypeHeader: 'application/json'},
           body: json.encode(dao.toJsonMap()));
+
       print('##################### Respuesta: ' + resp.statusCode.toString());
       if (resp.statusCode == 201) //201 es CREADO
       {
-        final decodeData = json.decode(resp.body);
-        DataUser.getInstance().setDao(new DaoQuestion(
-            nombre: this.nombre, depto: this.depto, torre: this.torre));
-        print('##################### Respuesta: ' + decodeData.toString());
-        ingresados = decodeData;
+        final json_data = json.decode(resp.body);
+        final dao = new DaoQuestion(nombre: this.nombre, depto: this.depto, torre: this.torre);  
+        print('##################### Respuesta: ' + json_data.toString());
+        print('##################### Respuesta: ' + dao.toString());
+        ingresados = json_data;
       }
     } catch (error) {
       print('##################### Cath');

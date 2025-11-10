@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'DataUser.dart';
-import 'DaoDoor.dart';
+//import 'dart:convert';
+//import 'DataUser.dart';
+//import 'DaoDoor.dart';
 
 class PageDoor extends StatefulWidget {
   
@@ -65,30 +61,30 @@ class _PageDoorState extends State<PageDoor> {
   }
 
   _press() async {
-    String myimei = DataUser.getInstance().getImei();
-    DaoDoor dao = new DaoDoor(imei: myimei, iddoor: widget.nombre);
-    print('##################### DOOR: ' + dao.toString());
-    try {
-      final url = Uri.http("190.100.132.139:8080", "open");
-      final resp = await http.post(url,
-          headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-          body: json.encode(dao.toJsonMap()));
-      print('##################### Respuesta: ' + resp.statusCode.toString());
-      if (resp.statusCode == 200) //200 es CREADO
-      {
-        final decodeData = json.decode(resp.body);
-        print('##################### Respuesta: ' + decodeData.toString());
-        abierta = decodeData;
-      }
-    } catch (error) {
-      print('##################### Cath');
-      abierta = false;
-    }
+    // String myimei = DataUser.getInstance().getImei();
+    // DaoDoor dao = new DaoDoor(imei: myimei, doorId: widget.nombre);
+    // print('##################### DOOR: ' + dao.toString());
+    // try {
+    //   final url = Uri.http("190.100.132.139:8080", "open");
+    //   final resp = await http.post(url,
+    //       headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    //       body: json.encode(dao.toJsonMap()));
+    //   print('##################### Respuesta: ' + resp.statusCode.toString());
+    //   if (resp.statusCode == 200) //200 es CREADO
+    //   {
+    //     final decodeData = json.decode(resp.body);
+    //     print('##################### Respuesta: ' + decodeData.toString());
+     //    abierta = decodeData;
+     //  }
+    // } catch (error) {
+    //   print('##################### Cath');
+    //   abierta = false;
+    // }
     setState(() {
-      if (abierta) {
+    //   if (abierta) {
         print("############## Abre Puerta");
-        //_openDoor();
-      }
+         _openDoor();
+    //  }
     });
   }
 

@@ -22,7 +22,7 @@ class PageError extends StatelessWidget
 {
   final String errorText;
 
-  PageError({@required this.errorText});
+  PageError({required this.errorText});
 
   @override
   Widget build(BuildContext aContext) 

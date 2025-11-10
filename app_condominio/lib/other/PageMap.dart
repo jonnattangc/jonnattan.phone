@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:permission/permission.dart';
-import 'package:threading/threading.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 class PageMap extends StatefulWidget 
 {
@@ -13,12 +13,10 @@ class PageMap extends StatefulWidget
 
 class _PageMapState extends State<PageMap>
 {
-
   @override
   void initState() { 
     super.initState();
-    Thread thread = new Thread( _getUbicacion );
-    thread.start();
+    _getUbicacion();
   }
 
   double latitud = 0.0;
@@ -73,6 +71,18 @@ final CameraPosition _kGooglePlex = CameraPosition(
     
 }
 
+Future<void> _esperarUnRato() async {
+  print('Iniciando la espera...');
+
+  // Espera 100 segundos (100000 milisegundos)
+  await Future.delayed(Duration(milliseconds: 100000));
+  
+  // También puedes usar:
+  // await Future.delayed(Duration(seconds: 100));
+
+  print('¡Espera terminada! La UI sigue funcionando.');
+}
+
  _getUbicacion( ) async
 {
   bool running = true;
@@ -87,14 +97,28 @@ final CameraPosition _kGooglePlex = CameraPosition(
     });
 */
 
+  // Solicita el permiso
+  var status = await Permission.location.request();
+
+  if (status.isGranted) {
+    // El usuario concedió el permiso
+    print("Permiso de ubicación concedido.");
+  } else if (status.isDenied) {
+    // El usuario denegó el permiso una vez
+    print("Permiso denegado. Se puede volver a solicitar.");
+  } else if (status.isPermanentlyDenied) {
+    // El usuario denegó permanentemente y marcó "no volver a preguntar"
+    print("Permiso denegado permanentemente. Redirigiendo a la configuración...");
+    openAppSettings(); // Función útil para abrir la configuración de la app
+  }
 
   while( running )
   {
     try {
-      await Thread.sleep(100000);
-      print('########## Obtengo Posicion: '  + DateTime.now().toIso8601String() );    
-      var permissions = await Permission.getPermissionsStatus([PermissionName.Calendar, PermissionName.Camera]);
-      print('########## Permiso: '  + permissions[0].permissionName.toString() ); 
+      await _esperarUnRato();
+      // print('########## Obtengo Posicion: '  + DateTime.now().toIso8601String() );    
+      // var permissions = await Permission.getPermissionsStatus([PermissionName.Calendar, PermissionName.Camera]);
+      // print('########## Permiso: '  + permissions[0].permissionName.toString() ); 
       //Permission.openSettings;
 
       //double distanceInMeters = await Geolocator().distanceBetween(52.2165157, 6.9437819, 52.3546274, 4.8285838);
@@ -119,7 +143,7 @@ final CameraPosition _kGooglePlex = CameraPosition(
       // print("Latitude: ${position.latitude} Longitude ${position.longitude} ");
     }catch( error )
     {
-      print('########## ERROR, fuera: ' + error );
+      print('########## Error: ' + error.toString() );
       running = false;
       break;
     }

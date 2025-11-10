@@ -1,14 +1,14 @@
 
 class DaoQuestion 
 {
-  String nombre;
-  String depto;
-  String torre;
+  final String nombre;
+  final String depto;
+  final String torre;
 
   DaoQuestion({ 
     required this.nombre, 
     required this.depto, 
-    required this.torre,}){}
+    required this.torre,});
 
   @override
   String toString() 
@@ -16,11 +16,5 @@ class DaoQuestion
     String detail = '${this.nombre} ${this.depto}${this.torre}';
     return detail;
   }
-
-  void fromJsonMap(Map<String,dynamic> json)
-  {
-    nombre = json['nombre'];
-    depto = json['depto'];
-    torre = json['torre'];
-  }
+  
 }

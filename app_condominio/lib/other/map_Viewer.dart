@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
-import 'package:latlong/latlong.dart';
 
+final LatLng posTest = LatLng(10.0, 10.0);
 class MapaWidget extends StatefulWidget 
 {
   final LatLng ubicacion;
@@ -12,7 +12,7 @@ class MapaWidget extends StatefulWidget
   final double height;
   final double zoom;
 
-  MapaWidget({required this.ubicacion, this.titulo, this.subTitulo, this.height = 300.0, this.zoom = 5});
+  MapaWidget({required this.ubicacion, required this.titulo, required this.subTitulo, required this.height, required this.zoom});
 
   @override
   _MapaWidgetState createState() => _MapaWidgetState();
@@ -21,59 +21,57 @@ class MapaWidget extends StatefulWidget
 class _MapaWidgetState extends State<MapaWidget> 
 {
   @override
-  Widget build(BuildContext context) 
-  {
-    return Container (
+  Widget build(BuildContext context) {
+    return Container(
       padding: EdgeInsets.all(7.0),
-      /*decoration: BoxDecoration (
-        color: Color.fromRGBO(0x99, 0x66, 0x30, 0.4),
-        borderRadius: BorderRadius.circular(20.0), 
-        boxShadow: <BoxShadow>[
-          BoxShadow(blurRadius: 1, spreadRadius: 1.0,offset: Offset(2.0, 1.0))
-        ]
-      ),*/
       height: widget.height,
+      // El Container le da el tamaño
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20.0) ,
+        // Aplicamos el recorte y borde redondeado directamente aquí
+        borderRadius: BorderRadius.circular(20.0),
         child: Card(
           elevation: 0.0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
-          child: FlutterMap( 
-                options: MapOptions( center: widget.ubicacion, zoom: widget.zoom), 
-                layers: [ _crearMapa(), _crearMarcadores(), ], 
-              ),
-      ),)
+          child: FlutterMap( // El mapa es el hijo directo del recorte
+            options: MapOptions( initialCenter: posTest, initialZoom: 18.0, ),
+            children: [ _crearMapa(), ],
+          ),
+        ),
+      ),
     );
   }
 
   _crearMapa() {
-    return TileLayerOptions(
+    return TileLayer (
         urlTemplate: 'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}',
         additionalOptions: {
           'accessToken': 'pk.eyJ1Ijoiam9ubmF0dGFuIiwiYSI6ImNrMzdscm4xeDAwNDAzbmx1dWN5ZTY4MGcifQ.91yKbEmiPA2-N2agHvdNvw',
-          'id': 'mapbox.streets' // streets, dark, light, outdoors, satellite
+          'id': 'mapbox.streets' // streets, dark, light, outdoors, satellite-v9
         });
   }
 
-  _crearMarcadores() {
-    return MarkerLayerOptions(
-      markers: <Marker>[
+  /*_crearMarcadores() {
+    return MarkerLayer(
+      markers: [
         Marker(
-            anchorPos: AnchorPos.exactly(Anchor(50.0, 30.0)),
-            width: 100.0,
-            height: 60.0,
-            point: widget.ubicacion,
-            builder: (context) => Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      _creaIcono(),
-                      _creaTitulo(),
-                      _creaSubTitulo(),
-                    ],
-                  ),
-                )),
+          point: LatLng(51.5, -0.1), // Coordenada donde se ubicará el marcador
+          width: 80.0,              // Ancho que ocupará el marcador en píxeles
+          height: 80.0,             // Alto que ocupará el marcador en píxeles
+          // El 'builder' define el widget que se dibujará como el marcador
+          builder: (context) => const Icon(
+            Icons.location_pin,
+            color: Colors.red,
+            size: 40.0,
+          ),
+        ),
+        //Marker(
+        //  point: posTest,
+        //  builder: (context) => Column(
+        //      crossAxisAlignment: CrossAxisAlignment.center,
+        //      mainAxisAlignment: MainAxisAlignment.start,
+        //      children: <Widget>[ _creaIcono(), _creaTitulo(), _creaSubTitulo(), ],
+        //  ),
+        //),
       ],
     );
   }
@@ -109,7 +107,7 @@ class _MapaWidgetState extends State<MapaWidget>
         ),
       );
   }
-
+*/
   @override
   void dispose() {
     super.dispose();
