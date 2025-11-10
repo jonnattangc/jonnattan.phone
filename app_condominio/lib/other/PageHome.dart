@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:imei_plugin/imei_plugin.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -12,9 +12,10 @@ import 'PageSystem.dart';
 import 'RegisterPage.dart';
 
 class MyHomePage extends StatelessWidget {
+
   final String title;
 
-  MyHomePage({Key key, @required this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class MyHomePage extends StatelessWidget {
           height: 40.0,
           child: Center(
               child: Text(
-            '${DataUser.getInstance().toString()}',
+            'Texto para pruebas',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
@@ -79,7 +80,7 @@ class MyHomePage extends StatelessWidget {
 
   _getPrincipal(BuildContext contex) {
     return FutureBuilder(
-      future: _validateImei(),
+      future: _validateImei( contex ),
       initialData: false,
       builder: (BuildContext contex, AsyncSnapshot<bool> snapshot) {
         switch (snapshot.connectionState) {
@@ -93,31 +94,43 @@ class MyHomePage extends StatelessWidget {
             if (snapshot.hasError) {
               return PageError(errorText: snapshot.error.toString());
             } else {
-              String imei = DataUser.getInstance().getImei();
-              return snapshot.data
-                  ? PageSystem(
-                      imei: imei,
-                    )
-                  : RegisterPage(
-                      imei: imei,
-                    );
+              String imei = '123';
+              print('########## IMEI: ' + imei);
+              Widget page;
+              if ( snapshot.data == false ) {
+                page = new RegisterPage( imei: imei, );
+              }else{
+                page = PageSystem( imei: imei,); // 
+              }
+              return page;
             }
         }
-        return null; // unreachable
       },
     );
   }
 
-  Future<String> _obtieneImei() async {
-    String getimei =
-        await ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false);
+  Future<String> _getDeviceId( BuildContext context ) async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.id; // o androidInfo.androidId
+    } else if (Theme.of(context).platform == TargetPlatform.iOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      return iosInfo.identifierForVendor ?? 'Unknown';
+    }
+    return 'Unsupported Platform';
+  }
+
+
+  Future<String> _obtieneImei( BuildContext contex ) async {
+    String getimei = await _getDeviceId(contex);
     print('########## MI IMEI: ' + getimei);
     return getimei;
   }
 
-  Future<bool> _validateImei() async {
-    String imei = await _obtieneImei();
-    DataUser.getInstance().setIMEI(imei);
+  Future<bool> _validateImei( BuildContext contex ) async {
+    String imei = await _obtieneImei( contex );
+    DataUser user = DataUser(imei: imei, valid: false);
     String path = 'validate/' + imei;
     print('########## INTENTO VALIDAR IMEI: ' + imei);
     //valido el IMEI con aquellos que tengo guardados
@@ -126,24 +139,29 @@ class MyHomePage extends StatelessWidget {
       final resp = await http.get(url);
       print('##################### Respuesta: ' + resp.statusCode.toString());
       if (resp.statusCode == 200) {
-        final decodeData = json.decode(resp.body);
-        final dao = DaoQuestion.fromJsonMap(decodeData);
+        final data_json = json.decode(resp.body);
+        final dao = DaoQuestion( nombre : data_json['nombre'], depto : data_json['depto'], torre : data_json['torre'],);
         print('##################### Respuesta: ' + dao.toString());
-        DataUser.getInstance().imeiValid();
-        DataUser.getInstance().setDao(dao);
+        user.setDao(dao);
       }
     } catch (error) {
       print('##################### Cath');
     }
-    return DataUser.getInstance().isValid();
+    return true;
   }
 
   _callCondominio() async {
-    const url = 'tel:+56323184623';
-    if (await canLaunch(url)) {
-      await launch(url);
+    const phoneNumber = 'tel:+56323184623';
+
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+
+    if (await launchUrl(launchUri)) {
+      print('Successfully launched: $phoneNumber');
     } else {
-      throw 'Could not launch $url';
+      throw 'Could not launch $phoneNumber';
     }
   }
 
@@ -158,10 +176,10 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  Future<bool> _cierreApp(BuildContext context) async {
-    return showDialog<bool>(
+  Future<bool?> _cierreApp(BuildContext context) async {
+    return showDialog<bool?>(
       context: context,
-      builder: _getBuilder,
+      builder: _getBuilder(context),
     );
   }
 

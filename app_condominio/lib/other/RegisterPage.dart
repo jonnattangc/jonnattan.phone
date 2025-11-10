@@ -6,11 +6,13 @@ import 'dart:convert';
 
 import 'DaoNeighbour.dart';
 import 'DaoQuestion.dart';
-import 'DataUser.dart';
+// import 'DataUser.dart';
 
 class RegisterPage extends StatefulWidget {
+
   final String imei;
-  RegisterPage({@required this.imei});
+  
+  RegisterPage({required this.imei});
 
   @override
   _RegisterPageState createState() => _RegisterPageState();
@@ -122,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
           width: 10.0,
         ),
         SwitchListTile(
-          activeColor: Colors.blue,
+          activeTrackColor: Colors.blue,
           // isThreeLine: true,
           dense: true, title: Text('Tiene ud. mascota'), value: mascota,
           onChanged: _changedM,
@@ -141,20 +143,20 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  List<DropdownMenuItem<String>> _getItems() {
-    List<DropdownMenuItem<String>> list = new List();
-    list.add(DropdownMenuItem(
+  List<DropdownMenuItem<String>> _getItems() {    
+    DropdownMenuItem<String> A = DropdownMenuItem(
       child: Text('Torre A'),
       value: 'A',
-    ));
-    list.add(DropdownMenuItem(
+    );
+    DropdownMenuItem<String> B = DropdownMenuItem(
       child: Text('Torre B'),
       value: 'B',
-    ));
-    list.add(DropdownMenuItem(
+    );
+    DropdownMenuItem<String> C = DropdownMenuItem(
       child: Text('Torre C'),
       value: 'C',
-    ));
+    );
+    List<DropdownMenuItem<String>> list = [A,B,C];
     return list;
   }
 
@@ -164,9 +166,10 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  _selectTorre(String value) {
+  _selectTorre(String? value) {
+    String nameTorre = value ?? 'Desconocido';
     setState(() {
-      this.torre = value;
+      this.torre = nameTorre;
     });
   }
 
@@ -215,22 +218,24 @@ class _RegisterPageState extends State<RegisterPage> {
         name: this.nombre,
         mail: this.mail,
         depto: this.depto,
-        pet: this.mascota,
+        hasPet: this.mascota,
         torre: this.torre);
     print('##################### Ingreso: ' + dao.toString());
     try {
       final url = Uri.http("190.100.132.139:8080", "save");
+      
       final resp = await http.post(url,
           headers: {HttpHeaders.contentTypeHeader: 'application/json'},
           body: json.encode(dao.toJsonMap()));
+
       print('##################### Respuesta: ' + resp.statusCode.toString());
       if (resp.statusCode == 201) //201 es CREADO
       {
-        final decodeData = json.decode(resp.body);
-        DataUser.getInstance().setDao(new DaoQuestion(
-            nombre: this.nombre, depto: this.depto, torre: this.torre));
-        print('##################### Respuesta: ' + decodeData.toString());
-        ingresados = decodeData;
+        final json_data = json.decode(resp.body);
+        final dao = new DaoQuestion(nombre: this.nombre, depto: this.depto, torre: this.torre);  
+        print('##################### Respuesta: ' + json_data.toString());
+        print('##################### Respuesta: ' + dao.toString());
+        ingresados = json_data;
       }
     } catch (error) {
       print('##################### Cath');

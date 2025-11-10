@@ -1,9 +1,9 @@
 
-name: Jonnattan
+name: app_condominio
 description: App Oficial Prueba Jonnattan
 version: 1.0.0+2
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter
@@ -11,13 +11,15 @@ dependencies:
   sqflite:
   location:
   geolocator:
-  imei_plugin:
-  threading:
+  flutter_device_imei:
+  flutter_lints:
   flutter_map:
+  latlong2:
   url_launcher:
   http:
   google_maps_flutter:
-  permission:
+  permission_handler:
+  device_info_plus:
   
 dev_dependencies:
   flutter_test:
