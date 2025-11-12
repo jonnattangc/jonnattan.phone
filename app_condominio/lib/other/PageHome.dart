@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,7 +46,7 @@ class MyHomePage extends StatelessWidget {
           semanticLabel: 'CALL',
         ),
         elevation: 5.0,
-        // foregroundColor: Colors.white70,
+        foregroundColor: Colors.white70,
         onPressed: () {
           _callCondominio();
         },
@@ -80,11 +79,11 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  _getPrincipal(BuildContext contex) {
-    return FutureBuilder(
-      future: _validateImei( contex ),
-      initialData: false,
-      builder: (BuildContext contex, AsyncSnapshot<bool> snapshot) {
+  _getPrincipal(BuildContext contex) {  
+    return FutureBuilder<DataUser?>(
+      future: _imeiValidate( contex ),
+      initialData: null,
+      builder: (BuildContext contex, AsyncSnapshot<DataUser?> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
             return Text("none");
@@ -96,19 +95,49 @@ class MyHomePage extends StatelessWidget {
             if (snapshot.hasError) {
               return PageError(errorText: snapshot.error.toString());
             } else {
-              String imei = '123';
-              print('########## IMEI: ' + imei);
+              DataUser? data = snapshot.data;
+              String imei_str = data?.getImei() ?? "...";
+              print('########## IMEI: ${imei_str}');
               Widget page;
-              if ( snapshot.data == false ) {
-                page = new RegisterPage( imei: imei, );
+              if ( data == null ) {
+                page = new RegisterPage( imei: imei_str );
               }else{
-                page = PageSystem( imei: imei,); // 
+                page = PageSystem( imei: imei_str); // 
               }
               return page;
             }
         }
       },
     );
+  }
+
+  Future<DataUser?> _imeiValidate( BuildContext contex ) async {
+    String imei = await _getDeviceId(contex);
+    DataUser? user;
+    // IMEI es el mismo en el dispositivo
+    String path = '/mobile/validate/' + imei;
+    print('CAlling to: Get: ' + path);    
+    //valido el IMEI con aquellos que tengo guardados
+    try {
+      final url = Uri.http( "api.jonnattan.cl", path);
+      final resp = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic am9ubmF0dGFuOndzeHphcTEyMw==',
+        'Accept': 'application/json'
+      });
+
+      print('Respuesta HTTP: ' + resp.statusCode.toString());
+      if (resp.statusCode == 200) {
+        user = new DataUser(imei: imei, valid: false);
+        final data_json = json.decode(resp.body);
+        final dao = DaoQuestion( nombre : data_json['nombre'], depto : data_json['depto'], torre : data_json['torre'],);
+        print('Objeto recibido: ' + dao.toString());
+        user.setDao(dao);
+      }
+    } catch (error, stackTrace) {
+      print('Error: $error Stack $stackTrace');
+    }
+    return user;
   }
 
   Future<String> _getDeviceId( BuildContext context ) async {
@@ -123,52 +152,9 @@ class MyHomePage extends StatelessWidget {
     return 'Unsupported Platform';
   }
 
-
-  Future<String> _obtieneImei( BuildContext contex ) async {
-    String getimei = await _getDeviceId(contex);
-    print('IMEI: ' + getimei);
-    return getimei;
-  }
-
-  Future<bool> _validateImei( BuildContext contex ) async {
-    String imei = await _obtieneImei( contex );
-    DataUser user = DataUser(imei: imei, valid: false);
-    // el IMEI es el mismo en el dispositivo
-    String path = '/mobile/validate/' + imei;
-
-    print('########## INTENTO VALIDAR IMEI: ' + imei);
-
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
-    
-    //valido el IMEI con aquellos que tengo guardados
-    try {
-      final url = Uri.http("api.jonnattan.cl", path);
-      final resp = await http.get(url, headers: headers,);
-      
-      print('##################### Respuesta: ' + resp.statusCode.toString());
-      if (resp.statusCode == 200) {
-        final data_json = json.decode(resp.body);
-        final dao = DaoQuestion( nombre : data_json['nombre'], depto : data_json['depto'], torre : data_json['torre'],);
-        print('##################### Respuesta: ' + dao.toString());
-        user.setDao(dao);
-      }
-    } catch (error, stackTrace) {
-      print('##################### Cath $error Stack $stackTrace');
-    }
-    return true;
-  }
-
   _callCondominio() async {
-    const phoneNumber = 'tel:+56323184623';
-
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
-
+    const phoneNumber = 'tel:+56992116678';
+    final Uri launchUri = Uri( scheme: 'tel', path: phoneNumber,);
     if (await launchUrl(launchUri)) {
       print('Successfully launched: $phoneNumber');
     } else {
@@ -190,11 +176,11 @@ class MyHomePage extends StatelessWidget {
   Future<bool?> _cierreApp(BuildContext context) async {
     return showDialog<bool?>(
       context: context,
-      builder: _getBuilder(context),
+      builder: _getBuilder,
     );
   }
 
-  _getBuilder(BuildContext context) {
+ Widget _getBuilder(BuildContext context)  {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Center(
@@ -223,11 +209,6 @@ class MyHomePage extends StatelessWidget {
                     child: Container(
                       child: Text('Cancelar'),
                     ),
-                    //shape: RoundedRectangleBorder(
-                    //    borderRadius: BorderRadius.circular(10.0)),
-                    //elevation: 0.0,
-                    //color: Theme.of(context).primaryColor,
-                    //textColor: Colors.white,
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
@@ -237,10 +218,6 @@ class MyHomePage extends StatelessWidget {
                     child: Container(
                       child: Text('Salir'),
                     ),
-                    //shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(10.0)),
-                    //elevation: 0.0,
-                    //color: Theme.of(context).primaryColor,
-                    //textColor: Colors.white,
                     onPressed: () => SystemChannels.platform
                         .invokeMethod('SystemNavigator.pop'),
                   ),
