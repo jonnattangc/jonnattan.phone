@@ -5,6 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'DaoQuestion.dart';
 import 'DataUser.dart';
@@ -15,6 +16,7 @@ import 'RegisterPage.dart';
 class MyHomePage extends StatelessWidget {
 
   final String title;
+  final String _auth_key = dotenv.env['AUTH_KEY'] ?? 'none';
 
   MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -122,7 +124,7 @@ class MyHomePage extends StatelessWidget {
       final url = Uri.http( "api.jonnattan.cl", path);
       final resp = await http.get(url, headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Basic am9ubmF0dGFuOndzeHphcTEyMw==',
+        'Authorization': 'Basic ' + _auth_key,
         'Accept': 'application/json'
       });
 

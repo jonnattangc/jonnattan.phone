@@ -28,6 +28,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        val apiKey: String = project.properties["API_KEY_GOOGLE_MAPS"]?.toString() 
+                           ?: "DEFAULT_API_KEY_FALLBACK"
+        resValue("string", "google_maps_api_key", apiKey)
     }
 
     buildTypes {

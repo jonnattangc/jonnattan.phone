@@ -20,6 +20,7 @@ dependencies:
   google_maps_flutter:
   permission_handler:
   device_info_plus:
+  flutter_dotenv:
   
 dev_dependencies:
   flutter_test:
@@ -48,6 +49,8 @@ flutter:
   assets:
      - assets/Logo_Fondo_Transparente.png
      - assets/load.gif
+     - .env.development
+     - .env.production
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

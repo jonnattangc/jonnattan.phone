@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'other/PageHome.dart';
 
-void main() {
+// Ejemplo asumiendo que el script de ejecución define una variable FLUTTER_ENV
+const String FLUTTER_ENV = String.fromEnvironment('FLUTTER_ENV', defaultValue: 'development');
+
+Future<void> main() async {
+  await dotenv.load(fileName: ".env.$FLUTTER_ENV");
   runApp(MyApp());
 }
 
