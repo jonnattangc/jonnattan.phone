@@ -46,7 +46,7 @@ class _MapaWidgetState extends State<MapaWidget>
         urlTemplate: 'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}',
         additionalOptions: {
           'accessToken': 'pk.eyJ1Ijoiam9ubmF0dGFuIiwiYSI6ImNrMzdscm4xeDAwNDAzbmx1dWN5ZTY4MGcifQ.91yKbEmiPA2-N2agHvdNvw',
-          'id': 'mapbox.streets' // streets, dark, light, outdoors, satellite-v9
+          'id': 'mapbox.satellite-v9' // streets, dark, light, outdoors, satellite-v9
         });
   }
 
