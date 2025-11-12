@@ -140,7 +140,6 @@ class MyHomePage extends StatelessWidget {
 
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Basic am9ubmF0dGFuOndzeHphcTEyMw==',
       'Accept': 'application/json',
     };
     
