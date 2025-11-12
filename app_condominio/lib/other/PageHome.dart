@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -59,7 +61,7 @@ class MyHomePage extends StatelessWidget {
           height: 40.0,
           child: Center(
               child: Text(
-            'Texto para pruebas',
+            'Condominio',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
@@ -124,19 +126,29 @@ class MyHomePage extends StatelessWidget {
 
   Future<String> _obtieneImei( BuildContext contex ) async {
     String getimei = await _getDeviceId(contex);
-    print('########## MI IMEI: ' + getimei);
+    print('IMEI: ' + getimei);
     return getimei;
   }
 
   Future<bool> _validateImei( BuildContext contex ) async {
     String imei = await _obtieneImei( contex );
     DataUser user = DataUser(imei: imei, valid: false);
-    String path = 'validate/' + imei;
+    // el IMEI es el mismo en el dispositivo
+    String path = '/mobile/validate/' + imei;
+
     print('########## INTENTO VALIDAR IMEI: ' + imei);
+
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic am9ubmF0dGFuOndzeHphcTEyMw==',
+      'Accept': 'application/json',
+    };
+    
     //valido el IMEI con aquellos que tengo guardados
     try {
-      final url = Uri.http("190.100.132.139:8080", path);
-      final resp = await http.get(url);
+      final url = Uri.http("api.jonnattan.cl", path);
+      final resp = await http.get(url, headers: headers,);
+      
       print('##################### Respuesta: ' + resp.statusCode.toString());
       if (resp.statusCode == 200) {
         final data_json = json.decode(resp.body);
@@ -144,8 +156,8 @@ class MyHomePage extends StatelessWidget {
         print('##################### Respuesta: ' + dao.toString());
         user.setDao(dao);
       }
-    } catch (error) {
-      print('##################### Cath');
+    } catch (error, stackTrace) {
+      print('##################### Cath $error Stack $stackTrace');
     }
     return true;
   }
