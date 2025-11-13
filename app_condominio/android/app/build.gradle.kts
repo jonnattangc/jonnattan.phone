@@ -20,17 +20,18 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "cl.jonnattan.app_condominio"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        val apiKey: String = project.properties["API_KEY_GOOGLE_MAPS"]?.toString() 
-                           ?: "DEFAULT_API_KEY_FALLBACK"
+        val apiKey: String = (System.getenv("API_KEY_GOOGLE_MAPS") as? String) ?: "__NO_FOUND__"
+        
+        println("=====================================================")
+        println("DEBUG: API Key inyección: $apiKey")
+        println("=====================================================")
+
         resValue("string", "google_maps_api_key", apiKey)
     }
 

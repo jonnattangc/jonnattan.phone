@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-//import 'dart:convert';
-//import 'DataUser.dart';
-//import 'DaoDoor.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'DataUser.dart';
+import 'DaoDoor.dart';
 
 class PageDoor extends StatefulWidget {
-  
   final String nombre;
   final String detalle;
 
@@ -17,7 +19,9 @@ class PageDoor extends StatefulWidget {
 class _PageDoorState extends State<PageDoor> {
   _PageDoorState();
 
-  bool abierta = false;
+  bool _open_door = false;
+
+  final String _auth_key = dotenv.env['AUTH_KEY'] ?? 'none';
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,6 @@ class _PageDoorState extends State<PageDoor> {
     return Container(
       padding: EdgeInsets.only(top: 0.0, bottom: 2.0, left: 5.0, right: 5.0),
       height: 100.0,
-      // width: 205.0,
       child: Card(
           elevation: 0.0,
           color: Color.fromRGBO(0x99, 0x66, 0x30, 0.1),
@@ -42,54 +45,25 @@ class _PageDoorState extends State<PageDoor> {
     return ListTile(
       dense: true,
       enabled: true,
-      leading: Icon(Icons.account_balance,
-          color: abierta ? Colors.green : Colors.red),
+      leading: Icon(_open_door ? Icons.lock_open : Icons.lock_clock_sharp,
+          color: _open_door ? Colors.green : Colors.red),
       trailing: Icon(Icons.keyboard_arrow_right),
       title: Text(widget.detalle,
           style: TextStyle(
-            fontWeight: abierta ? FontWeight.bold : FontWeight.normal,
-            fontSize: abierta ? 16 : 14,
+            fontWeight: _open_door ? FontWeight.bold : FontWeight.normal,
+            fontSize: _open_door ? 16 : 20,
           )),
-      subtitle: Text(abierta ? 'Puerta Abierta' : 'Puerta Cerrada',
+      subtitle: Text(_open_door ? 'Puerta Abierta' : 'Puerta Cerrada',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: abierta ? 14 : 12,
+            fontSize: _open_door ? 14 : 12,
           )),
-      onLongPress: _press,
+      onLongPress: _openDoor,
       onTap: () {},
     );
   }
 
-  _press() async {
-    // String myimei = DataUser.getInstance().getImei();
-    // DaoDoor dao = new DaoDoor(imei: myimei, doorId: widget.nombre);
-    // print('##################### DOOR: ' + dao.toString());
-    // try {
-    //   final url = Uri.http("190.100.132.139:8080", "open");
-    //   final resp = await http.post(url,
-    //       headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-    //       body: json.encode(dao.toJsonMap()));
-    //   print('##################### Respuesta: ' + resp.statusCode.toString());
-    //   if (resp.statusCode == 200) //200 es CREADO
-    //   {
-    //     final decodeData = json.decode(resp.body);
-    //     print('##################### Respuesta: ' + decodeData.toString());
-     //    abierta = decodeData;
-     //  }
-    // } catch (error) {
-    //   print('##################### Cath');
-    //   abierta = false;
-    // }
-    setState(() {
-    //   if (abierta) {
-        print("############## Abre Puerta");
-         _openDoor();
-    //  }
-    });
-  }
-
   Future<void> _openDoor() async {
-    print("Ejecuta servicio para abrir...");
     showDialog(
         context: context,
         builder: (context) {
@@ -108,10 +82,50 @@ class _PageDoorState extends State<PageDoor> {
               ],
             ),
             actions: <Widget>[
-              //FlatButton( child: Text('Cancelar'), onPressed: ()=> Navigator.of(context).pop(),),
-              //FlatButton( child: Text('Ok'), onPressed: _openDoor,),
+              TextButton(
+                child: Text('Cancelar'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              TextButton(
+                child: Text('Ok'),
+                onPressed: () => {_press(), Navigator.of(context).pop()},
+              ),
             ],
           );
         });
+  }
+
+  _press() async {
+    DataUser? user = DataUser();
+    print('##################### DOOR: ' + user.toString());
+    print('##################### Name: ' +widget.nombre.toString());
+    String imei = user.getImei();
+    DaoDoor dao = new DaoDoor(imei: imei, doorId: 0, doorName: widget.nombre, curretState: _open_door);
+
+    final url = Uri.https("api.jonnattan.cl", "/mobile/door/open");
+    final Map<String, String> _headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + _auth_key,
+      'Accept': 'application/json'
+    };
+
+    try {
+      final http.Response response = await http.post(url,
+          headers: _headers, body: json.encode(dao.toJsonMap()));
+      print('Respuesta: ' + response.statusCode.toString());
+      if (response.statusCode == 200) {
+        final data_json = json.decode(response.body);
+        print('Respuesta: ' + data_json.toString());
+        _open_door = data_json['opened'];
+      }
+    } catch (error, stackTrace) {
+      print('Error: $error Stack $stackTrace');
+      _open_door = false;
+    }
+    setState(() {
+      if (_open_door) {
+        _cardTarea();
+      }
+    });
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -14,9 +13,9 @@ import 'PageSystem.dart';
 import 'RegisterPage.dart';
 
 class MyHomePage extends StatelessWidget {
-
   final String title;
   final String _auth_key = dotenv.env['AUTH_KEY'] ?? 'none';
+  final String _phone_number = dotenv.env['PHONE_NUMBER'] ?? '+56';
 
   MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -35,7 +34,7 @@ class MyHomePage extends StatelessWidget {
           backgroundColor: Color.fromRGBO(0x99, 0x66, 0x30, 0.4),
           child: Image(
             image: AssetImage('assets/Logo_Fondo_Transparente.png'),
-            height: 50.0,
+            height: 30.0,
           ),
         ),
         // bottom: PreferredSizeWidget( ),
@@ -48,7 +47,7 @@ class MyHomePage extends StatelessWidget {
           semanticLabel: 'CALL',
         ),
         elevation: 5.0,
-        foregroundColor: Colors.white70,
+        foregroundColor: const Color.fromARGB(61, 255, 255, 255),
         onPressed: () {
           _callCondominio();
         },
@@ -59,7 +58,7 @@ class MyHomePage extends StatelessWidget {
         shape: const CircularNotchedRectangle(),
         color: Color.fromRGBO(0x99, 0x66, 0x30, 1.0),
         child: Container(
-          height: 40.0,
+          height: 20.0,
           child: Center(
               child: Text(
             'Condominio',
@@ -81,9 +80,9 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  _getPrincipal(BuildContext contex) {  
+  _getPrincipal(BuildContext contex) {
     return FutureBuilder<DataUser?>(
-      future: _imeiValidate( contex ),
+      future: _imeiValidate(contex),
       initialData: null,
       builder: (BuildContext contex, AsyncSnapshot<DataUser?> snapshot) {
         switch (snapshot.connectionState) {
@@ -101,10 +100,10 @@ class MyHomePage extends StatelessWidget {
               String imei_str = data?.getImei() ?? "...";
               print('########## IMEI: ${imei_str}');
               Widget page;
-              if ( data == null ) {
-                page = new RegisterPage( imei: imei_str );
-              }else{
-                page = PageSystem( imei: imei_str); // 
+              if (data == null) {
+                page = new RegisterPage(imei: imei_str);
+              } else {
+                page = PageSystem(); //
               }
               return page;
             }
@@ -113,26 +112,30 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  Future<DataUser?> _imeiValidate( BuildContext contex ) async {
+  Future<DataUser?> _imeiValidate(BuildContext contex) async {
     String imei = await _getDeviceId(contex);
-    DataUser? user;
-    // IMEI es el mismo en el dispositivo
+    DataUser? user = DataUser();
     String path = '/mobile/validate/' + imei;
-    print('CAlling to: Get: ' + path);    
-    //valido el IMEI con aquellos que tengo guardados
-    try {
-      final url = Uri.http( "api.jonnattan.cl", path);
-      final resp = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + _auth_key,
-        'Accept': 'application/json'
-      });
+    print('Calling to: Get: ' + path);
 
+    Map<String, String> _headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + _auth_key,
+      'Accept': 'application/json'
+    };
+    final url = Uri.https("api.jonnattan.cl", path);
+    try {
+      final http.Response resp = await http.get(url, headers: _headers);
       print('Respuesta HTTP: ' + resp.statusCode.toString());
       if (resp.statusCode == 200) {
-        user = new DataUser(imei: imei, valid: false);
+        user.setImei(imei);
+        user.validOk();
         final data_json = json.decode(resp.body);
-        final dao = DaoQuestion( nombre : data_json['nombre'], depto : data_json['depto'], torre : data_json['torre'],);
+        final dao = DaoQuestion(
+          nombre: data_json['nombre'],
+          depto: data_json['depto'],
+          torre: data_json['torre'],
+        );
         print('Objeto recibido: ' + dao.toString());
         user.setDao(dao);
       }
@@ -142,7 +145,7 @@ class MyHomePage extends StatelessWidget {
     return user;
   }
 
-  Future<String> _getDeviceId( BuildContext context ) async {
+  Future<String> _getDeviceId(BuildContext context) async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Theme.of(context).platform == TargetPlatform.android) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
@@ -155,8 +158,12 @@ class MyHomePage extends StatelessWidget {
   }
 
   _callCondominio() async {
-    const phoneNumber = 'tel:+56992116678';
-    final Uri launchUri = Uri( scheme: 'tel', path: phoneNumber,);
+    final phoneNumber = 'tel:$_phone_number';
+    print('############## Calling: $phoneNumber');
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
     if (await launchUrl(launchUri)) {
       print('Successfully launched: $phoneNumber');
     } else {
@@ -169,8 +176,8 @@ class MyHomePage extends StatelessWidget {
       margin: EdgeInsets.only(right: 10.0),
       child: IconButton(
         icon: Icon(Icons.exit_to_app),
-        color: Colors.red /*Color.fromRGBO(0x99, 0x66, 0x30, 0.1)*/,
-        onPressed: () => _cierreApp(context),
+        color: const Color.fromARGB(255, 100, 112, 33) /*Color.fromRGBO(0x99, 0x66, 0x30, 0.1)*/,
+        onPressed: () => _cierreApp,
       ),
     );
   }
@@ -182,7 +189,7 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
- Widget _getBuilder(BuildContext context)  {
+  Widget _getBuilder(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Center(
