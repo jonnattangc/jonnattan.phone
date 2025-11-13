@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-
-final LatLng posTest = LatLng(10.0, 10.0);
-class MapaWidget extends StatefulWidget 
-{
+class MapaWidget extends StatefulWidget {
   final LatLng ubicacion;
   final String titulo;
   final String subTitulo;
   final double height;
   final double zoom;
 
-  MapaWidget({required this.ubicacion, required this.titulo, required this.subTitulo, required this.height, required this.zoom});
+  MapaWidget(
+      {required this.ubicacion,
+      required this.titulo,
+      required this.subTitulo,
+      required this.height,
+      required this.zoom});
 
   @override
-  _MapaWidgetState createState() => _MapaWidgetState();
+  _MapaWidgetState createState() => _MapaWidgetState( ubicacion );
 }
 
-class _MapaWidgetState extends State<MapaWidget> 
-{
+class _MapaWidgetState extends State<MapaWidget> {
+
+  final String _key_map = dotenv.env['MAP_BOX_KEY'] ?? '';
+  LatLng _ubicacion = LatLng( -33.0, -74.0 );
+
+  _MapaWidgetState( this._ubicacion );
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,10 +39,16 @@ class _MapaWidgetState extends State<MapaWidget>
         borderRadius: BorderRadius.circular(20.0),
         child: Card(
           elevation: 0.0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
-          child: FlutterMap( // El mapa es el hijo directo del recorte
-            options: MapOptions( initialCenter: posTest, initialZoom: 18.0, ),
-            children: [ _crearMapa(), ],
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+          child: FlutterMap(
+            options: MapOptions(
+              initialCenter: _ubicacion,
+              initialZoom: 8.0,
+            ),
+            children: [
+              _crearMapa(),
+            ],
           ),
         ),
       ),
@@ -42,11 +56,12 @@ class _MapaWidgetState extends State<MapaWidget>
   }
 
   _crearMapa() {
-    return TileLayer (
-        urlTemplate: 'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}',
+    return TileLayer(
+        urlTemplate:
+            'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token=' + _key_map,
         additionalOptions: {
-          'accessToken': 'pk.eyJ1Ijoiam9ubmF0dGFuIiwiYSI6ImNrMzdscm4xeDAwNDAzbmx1dWN5ZTY4MGcifQ.91yKbEmiPA2-N2agHvdNvw',
-          'id': 'mapbox.satellite-v9' // streets, dark, light, outdoors, satellite-v9
+          'accessToken': _key_map,
+          'id': 'mapbox.streets' // streets, dark, light, outdoors, satellite-v9
         });
   }
 

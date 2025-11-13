@@ -1,12 +1,31 @@
 import 'DaoQuestion.dart';
 
 class DataUser {
+  final String version = '1.0';
   String? _imei;
-  bool? _valid;
+  bool? _valid = false;
   DaoQuestion? _info;
   
-  DataUser({ required String imei, required bool valid,}) : _imei = imei, _valid = valid;
+  static final DataUser _instance = DataUser._internal();
 
+  DataUser._internal();
+
+  factory DataUser() => _instance;  
+
+  void setImei( String imei )
+  {
+    this._imei = imei;
+  }
+
+  void validOk()
+  {
+    this._valid = true;
+  }
+
+ void validNOk()
+  {
+    this._valid = false;
+  }
 
   void setDao( DaoQuestion info )
   {
