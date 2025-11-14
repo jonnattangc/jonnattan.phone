@@ -11,6 +11,7 @@ dependencies:
   sqflite:
   location:
   geolocator:
+  mapbox_maps_flutter:
   flutter_device_imei:
   flutter_lints:
   flutter_map:

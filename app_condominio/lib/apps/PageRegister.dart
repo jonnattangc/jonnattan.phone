@@ -4,21 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'DaoNeighbour.dart';
-import 'DaoQuestion.dart';
+import 'dao/DaoNeighbour.dart';
+import 'dao/DaoQuestion.dart';
 // import 'DataUser.dart';
 
-class RegisterPage extends StatefulWidget {
-
-  final String imei;
-  
-  RegisterPage({required this.imei});
-
+class PageRegister extends StatefulWidget {
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<PageRegister> {
   String nombre = '';
   String mail = '';
   String depto = '';
@@ -191,21 +186,18 @@ class _RegisterPageState extends State<RegisterPage> {
         padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
         child: ingresados ? Text('Finalizar') : Text('Registrar'),
       ),
-      //shape: RoundedRectangleBorder(borderRadius:  BorderRadius.circular( 10.0)),
-      //elevation: 0.0,
-      //color: Colors.blue,
-      //textColor: Colors.white,
       onPressed: _registrar,
     );
   }
 
   void _registrar() async {
+    
     if (ingresados) {
       Navigator.pushReplacementNamed(context, '/');
       return;
     }
 
-    print("IMEI ${widget.imei} ");
+    print("IMEI  ");
     print("Nombre ${this.nombre} ");
     print("Mail ${this.mail} ");
     print("Depto ${this.depto} ");
@@ -214,7 +206,7 @@ class _RegisterPageState extends State<RegisterPage> {
     print("Torre ${this.torre} ");
 
     DaoNeighbour dao = new DaoNeighbour(
-        imei: widget.imei,
+        imei: '',
         name: this.nombre,
         mail: this.mail,
         depto: this.depto,

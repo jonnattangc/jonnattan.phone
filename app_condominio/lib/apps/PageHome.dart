@@ -1,16 +1,16 @@
+import 'package:app_condominio/apps/utils/ImeiUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'DaoQuestion.dart';
+import 'dao/DaoQuestion.dart';
 import 'DataUser.dart';
 import 'PageLoading.dart';
 import 'PageSystem.dart';
-import 'RegisterPage.dart';
+import 'PageRegister.dart';
 
 class MyHomePage extends StatelessWidget {
   final String title;
@@ -101,9 +101,9 @@ class MyHomePage extends StatelessWidget {
               print('########## IMEI: ${imei_str}');
               Widget page;
               if (data == null) {
-                page = new RegisterPage(imei: imei_str);
+                page = new PageRegister();
               } else {
-                page = PageSystem(); //
+                page = PageSystem();
               }
               return page;
             }
@@ -113,8 +113,11 @@ class MyHomePage extends StatelessWidget {
   }
 
   Future<DataUser?> _imeiValidate(BuildContext contex) async {
-    String imei = await _getDeviceId(contex);
+    ImeiUtil imeiUtil = ImeiUtil( context: contex);
+    String imei = await imeiUtil.getImei();
+    // se inicia el singleton asiciado al usuario
     DataUser? user = DataUser();
+
     String path = '/mobile/validate/' + imei;
     print('Calling to: Get: ' + path);
 
@@ -143,18 +146,6 @@ class MyHomePage extends StatelessWidget {
       print('Error: $error Stack $stackTrace');
     }
     return user;
-  }
-
-  Future<String> _getDeviceId(BuildContext context) async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    if (Theme.of(context).platform == TargetPlatform.android) {
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      return androidInfo.id; // o androidInfo.androidId
-    } else if (Theme.of(context).platform == TargetPlatform.iOS) {
-      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      return iosInfo.identifierForVendor ?? 'Unknown';
-    }
-    return 'Unsupported Platform';
   }
 
   _callCondominio() async {

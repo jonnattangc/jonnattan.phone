@@ -26,13 +26,16 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        val apiKey: String = (System.getenv("API_KEY_GOOGLE_MAPS") as? String) ?: "__NO_FOUND__"
+        val googleApiKey: String = (System.getenv("API_KEY_GOOGLE_MAPS") as? String) ?: "__NO_FOUND__"
+        val mapBoxApiKey: String = (System.getenv("MAP_BOX_KEY") as? String) ?: "__NO_FOUND__"
         
         println("=====================================================")
-        println("DEBUG: API Key inyección: $apiKey")
+        println("DEBUG: Google API Key: $googleApiKey")
+        println("DEBUG: Mapbox API Key: $mapBoxApiKey")
         println("=====================================================")
 
-        resValue("string", "google_maps_api_key", apiKey)
+        resValue("string", "google_maps_api_key", googleApiKey)
+        resValue("string", "mapbox_api_key", mapBoxApiKey)
     }
 
     buildTypes {
