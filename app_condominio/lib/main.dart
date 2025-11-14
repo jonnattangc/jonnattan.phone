@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-import 'other/PageHome.dart';
+import 'apps/PageHome.dart';
 
 // Ejemplo asumiendo que el script de ejecución define una variable FLUTTER_ENV
 const String FLUTTER_ENV =
