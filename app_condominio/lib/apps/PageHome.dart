@@ -11,6 +11,7 @@ import 'DataUser.dart';
 import 'PageLoading.dart';
 import 'PageSystem.dart';
 import 'PageRegister.dart';
+import 'package:app_condominio/apps/http/Services.dart';
 
 class MyHomePage extends StatelessWidget {
   final String title;
@@ -113,38 +114,12 @@ class MyHomePage extends StatelessWidget {
   }
 
   Future<DataUser?> _imeiValidate(BuildContext contex) async {
-    ImeiUtil imeiUtil = ImeiUtil( context: contex);
-    String imei = await imeiUtil.getImei();
-    // se inicia el singleton asiciado al usuario
-    DataUser? user = DataUser();
-
-    String path = '/mobile/validate/' + imei;
-    print('Calling to: Get: ' + path);
-
-    Map<String, String> _headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Basic ' + _auth_key,
-      'Accept': 'application/json'
-    };
-    final url = Uri.https("api.jonnattan.cl", path);
-    try {
-      final http.Response resp = await http.get(url, headers: _headers);
-      print('Respuesta HTTP: ' + resp.statusCode.toString());
-      if (resp.statusCode == 200) {
-        user.setImei(imei);
-        user.validOk();
-        final data_json = json.decode(resp.body);
-        final dao = DaoQuestion(
-          nombre: data_json['nombre'],
-          depto: data_json['depto'],
-          torre: data_json['torre'],
-        );
-        print('Objeto recibido: ' + dao.toString());
-        user.setDao(dao);
-      }
-    } catch (error, stackTrace) {
-      print('Error: $error Stack $stackTrace');
-    }
+    ImeiUtil util = ImeiUtil( context: contex);
+    Services services = Services();
+    String imei = await util.getImei();
+    print('########## IMEI: ${imei}');
+    DataUser? user = await services.validateImei( imei );    
+    
     return user;
   }
 

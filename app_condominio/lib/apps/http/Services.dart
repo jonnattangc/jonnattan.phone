@@ -18,7 +18,7 @@ class Services {
       'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
   };
 
-  Future<DataUser?> getUser( final String imei ) async {
+  Future<DataUser?> validateImei( final String imei ) async {
     DataUser? user;
     final diff = _date!.difference(DateTime.now());
     if (diff.inMinutes > 15) {
