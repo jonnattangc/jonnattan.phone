@@ -6,7 +6,7 @@ import 'package:latlong2/latlong.dart';
 class GeoMapUtil {
 
   Position? _currentPos;
-  
+
   get currentPos => _currentPos;
 
   Future<LatLng> getGeoPos() async {
@@ -25,7 +25,7 @@ class GeoMapUtil {
 
     double lat = _currentPos?.latitude ?? 0.0;
     double lon = _currentPos?.longitude ?? 0.0;
-    print("Latitud: ${lat} Longitud: ${lon}");
+    print("########### Latitud: ${lat} Longitud: ${lon}");
     return LatLng(lat, lon);
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
-import 'package:latlong2/latlong.dart';
+// import 'package:latlong2/latlong.dart';
 import 'package:app_condominio/apps/utils/GeoPosUtil.dart';
 class MapaWidget extends StatefulWidget {
   const MapaWidget({super.key});
@@ -33,7 +33,7 @@ class _MapaWidgetState extends State<MapaWidget> {
 
   Position _onMapPosition() {
     GeoMapUtil geo_util = GeoMapUtil();
-    Position? pos =  geo_util.currentPos;
+    Position? pos = geo_util.currentPos;
     print("======================>>>>> Posicion: $pos");
     return pos ?? Position(-74.5, 32.5);
   }
